@@ -136,6 +136,10 @@ class TempHighlight extends AnnotationEditor {
   }
 
   /** @inheritdoc */
+  serialize() {
+    return null;
+  }
+
   remove() {
     super.remove();
     this.#cleanDrawLayer();
