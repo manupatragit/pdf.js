@@ -4775,8 +4775,12 @@ class UnderlineAnnotation extends MarkupAnnotation {
       const upShift = rectHeight * 0.1;
 
       buffer.push(
-        `${numberToString(underlines[i + 0])} ${numberToString(underlines[i + 1] + upShift)} m`,
-        `${numberToString(underlines[i + 2])} ${numberToString(underlines[i + 3] + upShift)} l`
+        `${numberToString(underlines[i + 0])} ${numberToString(
+          underlines[i + 1] + upShift
+        )} m`,
+        `${numberToString(underlines[i + 2])} ${numberToString(
+          underlines[i + 3] + upShift
+        )} l`
       );
       appearanceBuffer.push(buffer.join("\n"));
     }
@@ -4921,19 +4925,23 @@ class StrikeOutAnnotation extends MarkupAnnotation {
   }
 
   static async createNewAppearanceStream(annotation, xref, params) {
-    const { color, rect, strikeouts } = annotation;
+    const { color, rect, underlines } = annotation;
 
     const appearanceBuffer = [`${getPdfColor(color, /* isFill */ false)}`];
 
     const buffer = [];
-    for (let i = 0; i < strikeouts.length; i += 8) {
+    for (let i = 0; i < underlines.length; i += 8) {
       buffer.length = 0;
-      const rectHeight = strikeouts[i + 5] - strikeouts[i + 1];
+      const rectHeight = underlines[i + 5] - underlines[i + 1];
       const upShift = rectHeight / 2;
 
       buffer.push(
-        `${numberToString(strikeouts[i + 0])} ${numberToString(strikeouts[i + 1] + upShift)} m`,
-        `${numberToString(strikeouts[i + 2])} ${numberToString(strikeouts[i + 3] + upShift)} l`
+        `${numberToString(underlines[i + 0])} ${numberToString(
+          underlines[i + 1] + upShift
+        )} m`,
+        `${numberToString(underlines[i + 2])} ${numberToString(
+          underlines[i + 3] + upShift
+        )} l`
       );
       appearanceBuffer.push(buffer.join("\n"));
     }
