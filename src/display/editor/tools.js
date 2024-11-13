@@ -909,7 +909,8 @@ class AnnotationEditorUIManager {
     });
   }
 
-  #sendUpdatedNodeList(targetId) {
+  // TODO: Remove editor first to avoid additional checks
+  #sendUpdatedNodeList(targetId, editorPlannedRemoved = null) {
     if (!targetId) {
       return;
     }
@@ -917,7 +918,10 @@ class AnnotationEditorUIManager {
     const serialized = [];
 
     for (const editor of this.#allEditors.values()) {
-      if (`${editor.targetId}` === `${targetId}`) {
+      if (
+        `${editor.targetId}` === `${targetId}` &&
+        editor !== editorPlannedRemoved
+      ) {
         serialized.push(editor.serializeToJSON());
       }
     }
@@ -1825,7 +1829,7 @@ class AnnotationEditorUIManager {
             this.#dispatchVisibleLinkNodeDivs();
           }
 
-          this.#sendUpdatedNodeList(editor.targetId);
+          this.#sendUpdatedNodeList(editor.targetId, editor);
         } else {
           this.#signalEditorDeleted(editor);
         }
@@ -1838,7 +1842,11 @@ class AnnotationEditorUIManager {
       }
     };
 
-    this.addCommands({ cmd, undo, mustExec: true }, editors);
+    const standaloneEditors = editors.filter(
+      editor =>
+        editor.constructor._editorType !== AnnotationEditorType.LINK_NODE
+    );
+    this.addCommands({ cmd, undo, mustExec: true }, standaloneEditors);
   }
 
   commitOrRemove() {
