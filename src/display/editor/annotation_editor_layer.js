@@ -931,12 +931,18 @@ class AnnotationEditorLayer {
         break;
     }
 
-    const boxes = [];
+    let boxes = [];
     for (const { x, y, width, height } of bboxes) {
       if (width === 0 || height === 0) {
         continue;
       }
       boxes.push(rotator(x, y, width, height));
+    }
+
+    // This only happens when mouse up event happens on empty space
+    // TODO: This is a workaround. Fix issue where invalid div is added to bbox
+    if (range.endContainer === this.#textLayer?.div) {
+      boxes = boxes.slice(0, -1);
     }
 
     if (this.#textSelectionMode === "generic") {

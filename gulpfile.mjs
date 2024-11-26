@@ -2144,7 +2144,7 @@ gulp.task(
 );
 
 function packageJson() {
-  const VERSION = "5.0.52";
+  const VERSION = "5.0.53";
 
   const DIST_NAME = "@commutatus/pdfjs-dist";
   const DIST_DESCRIPTION = "Experimental build of Mozilla's PDF.js library.";
