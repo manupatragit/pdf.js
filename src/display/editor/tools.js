@@ -1728,7 +1728,7 @@ class AnnotationEditorUIManager {
       }
     };
 
-    if (params.cmd) {
+    if (params.cmd && !params.skipChangeEmitters) {
       const originalFunction = params.cmd;
       params.cmd = () => {
         originalFunction();
@@ -1846,7 +1846,10 @@ class AnnotationEditorUIManager {
       editor =>
         editor.constructor._editorType !== AnnotationEditorType.LINK_NODE
     );
-    this.addCommands({ cmd, undo, mustExec: true }, standaloneEditors);
+    this.addCommands(
+      { cmd, undo, mustExec: true, skipChangeEmitters: true },
+      standaloneEditors
+    );
   }
 
   commitOrRemove() {
