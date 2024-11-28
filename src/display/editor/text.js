@@ -354,14 +354,13 @@ class TextEditor extends AnnotationEditor {
    * @returns {string}
    */
   #extractText() {
-    const divs = this.editorDiv.getElementsByTagName("div");
-    if (divs.length === 0) {
-      return this.editorDiv.innerText;
-    }
     const buffer = [];
-    for (const div of divs) {
-      buffer.push(div.innerText.replace(/\r\n?|\n/, ""));
-    }
+    this.editorDiv.childNodes.forEach(textNode => {
+      try {
+        const textContent = textNode.textContent.trim().replace(/\r\n?|\n/, "");
+        buffer.push(textContent);
+      } catch {}
+    });
     return buffer.join("\n");
   }
 
