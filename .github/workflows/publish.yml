@@ -35,7 +35,7 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
         working-directory: build/dist
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN_MKV }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish
         run: npm publish --tag next --access public
