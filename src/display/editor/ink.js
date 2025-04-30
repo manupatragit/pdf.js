@@ -1194,6 +1194,25 @@ class InkEditor extends AnnotationEditor {
       structTreeParentId: this._structTreeParentId,
     };
   }
+
+  serializeToJSON() {
+    if (this.isEmpty()) {
+      return null;
+    }
+
+    const rect = this.getRect(0, 0);
+
+    return {
+      annotationType: AnnotationEditorType.INK,
+      color: this.color,
+      opacity: this.opacity,
+      thickness: this.thickness,
+      pageIndex: this.pageIndex,
+      rect,
+      rotation: 0,
+      text:  "",
+    };
+  }
 }
 
 export { InkEditor };
