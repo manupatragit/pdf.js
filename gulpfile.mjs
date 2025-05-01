@@ -72,7 +72,7 @@ const COMMON_WEB_FILES = [
 ];
 const MOZCENTRAL_DIFF_FILE = "mozcentral.diff";
 
-const DIST_REPO_URL = "https://github.com/commutatus/pdfjs-dist";
+const DIST_REPO_URL = "https://github.com/manupatragit/pdfjs-dist.git";
 
 const CONFIG_FILE = "pdfjs.config";
 const config = JSON.parse(fs.readFileSync(CONFIG_FILE).toString());
