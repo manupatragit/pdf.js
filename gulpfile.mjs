@@ -2144,7 +2144,7 @@ gulp.task(
 );
 
 function packageJson() {
-  const VERSION = "5.0.56";
+  const VERSION = "6.0.0";
 
   const DIST_NAME = "manupdfjs-dist";
   const DIST_DESCRIPTION = "Experimental build of Mozilla's PDF.js library.";
