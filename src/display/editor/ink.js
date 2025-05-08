@@ -81,6 +81,8 @@ class InkEditor extends AnnotationEditor {
     this.x = 0;
     this.y = 0;
     this._willKeepAspectRatio = true;
+    this.left= -1;
+    this.top= -1;
   }
 
   /** @inheritdoc */
@@ -986,7 +988,7 @@ class InkEditor extends AnnotationEditor {
    */
   #serializePaths(s, tx, ty, rect) {
     const paths = [];
-    const padding = this.thickness / 2;
+    const padding = this.thickness * 2;
     const shiftX = s * tx + padding;
     const shiftY = s * ty + padding;
     for (const bezier of this.paths) {
@@ -1201,17 +1203,98 @@ class InkEditor extends AnnotationEditor {
     }
 
     const rect = this.getRect(0, 0);
+    this.commit();
 
     return {
       annotationType: AnnotationEditorType.INK,
       color: this.color,
       opacity: this.opacity,
       thickness: this.thickness,
+      paths: this.paths,
+      width: this.width,
+      height: this.height,
+      top: this.div.style.top,
+      left: this.div.style.left,
+      bezierPath2D: this.#serializePaths(
+        this.scaleFactor / this.parentScale,
+        this.translationX,
+        this.translationY,
+        rect
+      ),
       pageIndex: this.pageIndex,
       rect,
       rotation: 0,
       text:  "",
     };
+  }
+
+  static deserializeFromJSON(data, parent, uiManager) {
+    const editor = super.deserialize(data, parent, uiManager);
+
+    editor.thickness = data.thickness;
+    editor.color = data.color;
+    editor.opacity = data.opacity*2;
+
+    const [pageWidth, pageHeight] = editor.pageDimensions;
+    const width = ((data.width*pageWidth)+20)/pageWidth;
+    editor.width = width;
+    const height = ((data.height*pageHeight)+20)/pageHeight;
+    editor.height = height;
+    const scaleFactor = editor.parentScale;
+    const padding = data.thickness;
+    editor.left = data.left;
+    editor.top = data.top;
+    // editor.paths= data.paths;
+    const newpaths = [...editor.paths];  // Copy the array into a new array
+    newpaths.push(data.paths);  // Modify the copy
+    editor.paths = newpaths; 
+
+    editor.disableEditing = true;
+    editor.#realWidth = Math.round(width);
+    editor.#realHeight = Math.round(height);
+
+    const { bezierPath2D, rect, rotation } = data;
+
+    try{
+      for (let databezier of bezierPath2D) {
+        var tempdata= InkEditor.#fromPDFCoordinates([...databezier.bezier], rect, rotation);
+        const path = [];
+        let p0 = scaleFactor * (tempdata[0] - padding);
+        let p1 = scaleFactor * (tempdata[1] - padding);
+        for (let i = 2, ii = tempdata.length; i < ii; i += 6) {
+          const p10 = scaleFactor * (tempdata[i] - padding);
+          const p11 = scaleFactor * (tempdata[i + 1] - padding);
+          const p20 = scaleFactor * (tempdata[i + 2] - padding);
+          const p21 = scaleFactor * (tempdata[i + 3] - padding);
+          const p30 = scaleFactor * (tempdata[i + 4] - padding);
+          const p31 = scaleFactor * (tempdata[i + 5] - padding);
+          path.push([
+            [p0, p1],
+            [p10, p11],
+            [p20, p21],
+            [p30, p31],
+          ]);
+          p0 = p30;
+          p1 = p31;
+        }
+        const path2D = this.#buildPath2D(path);
+        const newBezierPath2D = [...editor.bezierPath2D];  // Copy the array into a new array
+        newBezierPath2D.push(path2D);  // Modify the copy
+        editor.bezierPath2D = newBezierPath2D;  // Reassign the modified array
+      }
+    }
+    catch(e){
+      console.error("InkEditor.deserializeFromJSON", e);
+    }
+    
+    const bbox = editor.#getBbox();
+    editor.#baseWidth = Math.max(AnnotationEditor.MIN_SIZE, bbox[2] - bbox[0]);
+    editor.#baseHeight = Math.max(AnnotationEditor.MIN_SIZE, bbox[3] - bbox[1]);
+    editor.#setScaleFactor(width, height);
+
+    editor.wasAddedFromApi = true;
+
+    return editor;
   }
 }
 
