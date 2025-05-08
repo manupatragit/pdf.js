@@ -567,8 +567,8 @@ class AnnotationEditor {
     y += by;
 
     const { style } = this.div;
-    style.left = `${(100 * x).toFixed(2)}%`;
-    style.top = `${(100 * y).toFixed(2)}%`;
+    style.left = (this.left && this.left!=-1)?`${this.left}`:`${(100 * x).toFixed(2)}%`;
+    style.top = (this.top && this.top!=-1)?`${this.top}`:`${(100 * y).toFixed(2)}%`;
 
     this.moveInDOM();
   }
