@@ -1205,6 +1205,14 @@ class InkEditor extends AnnotationEditor {
     const rect = this.getRect(0, 0);
     this.commit();
 
+    if(this.apiId!= null && Number.isNaN(this.width) && Number.isNaN(this.height)){
+      return {
+        annotationType: AnnotationEditorType.INK,
+        action: "delete",
+        apiId: this.apiId,
+      };
+    }
+
     return {
       annotationType: AnnotationEditorType.INK,
       color: this.color,
@@ -1225,6 +1233,7 @@ class InkEditor extends AnnotationEditor {
       rect,
       rotation: 0,
       text:  "",
+      action: "add",
     };
   }
 
