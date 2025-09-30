@@ -634,8 +634,6 @@ class InkEditor extends AnnotationEditor {
     this.div.focus({
       preventScroll: true /* See issue #15744 */,
     });
-
-    this.parent.resetAnnotationMode();
   }
 
   /** @inheritdoc */

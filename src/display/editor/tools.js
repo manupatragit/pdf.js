@@ -605,6 +605,8 @@ class AnnotationEditorUIManager {
 
   static TRANSLATE_BIG = 10; // page units.
 
+  
+
   static get _keyboardManager() {
     const proto = AnnotationEditorUIManager.prototype;
 
@@ -1559,9 +1561,11 @@ class AnnotationEditorUIManager {
    */
   #addEditorToLayer(editor) {
     const layer = this.#allLayers.get(editor.pageIndex);
+
     if (layer) {
       layer.addOrRebuild(editor);
     } else {
+      layer.div.setAttribute('apiid', editor.apiId);
       this.addEditor(editor);
     }
   }
