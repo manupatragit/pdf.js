@@ -36,6 +36,10 @@ jobs:
         working-directory: build/dist
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Bump version
+        run: npm version patch --no-git-tag-version
+        working-directory: build/dist
 
       - name: Publish
         run: npm publish --tag next --access public
