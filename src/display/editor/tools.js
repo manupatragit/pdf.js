@@ -1470,6 +1470,14 @@ class AnnotationEditorUIManager {
 
   /**
    * Get all the editors belonging to a given page.
+   * @returns {Map<String,AnnotationEditor>}
+   */
+  getAllEditors() {
+    return this.#allEditors;
+  }
+
+  /**
+   * Get all the editors belonging to a given page.
    * @param {number} pageIndex
    * @returns {Array<AnnotationEditor>}
    */
